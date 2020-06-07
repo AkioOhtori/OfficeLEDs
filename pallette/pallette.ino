@@ -10,7 +10,7 @@ CRGB leds[NUM_LEDS];
 uint8_t n = 0;
 #define RATELIMIT 8 //TODO make variable
 #define CYCLES NUM_LEDS*RATELIMIT
-#define UPDATES_PER_SECOND 20  //TODO make variable, dynamic
+#define UPDATES_PER_SECOND 1  //TODO make variable, dynamic
 
 // This example shows several ways to set up and use 'palettes' of colors
 // with FastLED.
@@ -66,12 +66,7 @@ void loop()
     
     static uint8_t startIndex = 0;
     startIndex = int(startIndex + 1);//n/RATELIMIT); /* motion speed */
-    /*if(n <= NUM_LEDS) {
-        n++;
-    }
-    else {
-        n = 0;
-    }*/
+
     FillLEDsFromPaletteColors( startIndex);
     
     FastLED.show();
@@ -81,12 +76,13 @@ void loop()
 void FillLEDsFromPaletteColors( uint8_t colorIndex)
 {
     uint8_t brightness = BRIGHTNESS;//255; //TODO make this a variable
-    //fill_palette( leds, NUM_LEDS, n, 4, RainbowColors_p, BRIGHTNESS, LINEARBLEND);
+    fill_palette( leds, NUM_LEDS, n, 4, RainbowColors_p, BRIGHTNESS, LINEARBLEND);
+    //fill LED Array, size, index for movement, spread TODO, pallette TODO, brightness TODO, blending
 
-    for( int i = 0; i < NUM_LEDS; i++) {
+    /*for( int i = 0; i < NUM_LEDS; i++) {
         leds[i] = ColorFromPalette( currentPalette, colorIndex, brightness, currentBlending);
         colorIndex += 4;  //TODO make this a variable SPREAD
-    }
+    }*/
 }
 
 
