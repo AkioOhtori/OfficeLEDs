@@ -39,63 +39,11 @@ void setup(){
 //--------------- loop ----------------------------------------------- 
 void loop(){
 
-
-  switch (mode) {
-    
-    case 0:
-    if(Serial.available()) {
-      command = Serial.readStringUntil(' ');
-      mode++;
-      Serial.print("Got the command");
-      Serial.print(command);
-      Serial.flush(); 
-    }
-    break;
-
-    case 1:
-    if(Serial.available()) {
-      value = Serial.readStringUntil('/n');
-      mode = command[0];
-      Serial.print(command+value);
-      Serial.flush(); 
-    }
-    break;
-
-    case 'm':  //MODE
-    //change the mode, yo
-    mode = 0;
-    break;
-
-    case 'b':  //BRIGHTNESS
-    //change the brightness, yo
-    mode = 0;
-    break;
-
-    case 's': //SPEED
-    case 'S':
-    mode = 0;
-    break;
-
-    case 'l': //length
-    mode = 0;
-    break;
-
-    case 'p': //PATTERN
-    mode = 0;
-    break;
-
-    case 'f': //favorites
-    mode = 0;
-    break;
-
-        
-    default:                           
-      Serial.print("'");
-      //Serial.print((char)rxChar);
-      Serial.println("' is not a command!");
-      mode = 0;
-    
-  }
+if (Serial.available()) {
+  char rx = (char)Serial.read();
+  Serial.print(rx);
+  Serial.flush();
+}
   
 }
 

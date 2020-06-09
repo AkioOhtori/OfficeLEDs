@@ -13,11 +13,16 @@ int pattern = 5;
 int length = 1;
 int decay = 8;
 
+//SERIAL CRAP//
 char step = 0;
-#define LED 13          // Pin 13 is connected to the LED
 String rxChar;         // RXcHAR holds the received command.
 String command = "";
 String value = "";
+//char rx = '';
+
+//TESTING
+int place = 0;
+int counter = 0;
 
 /*
 #define BRIGHTNESS 64
@@ -46,12 +51,29 @@ void setup() {
   Serial.begin(9600);   // Open serial port (9600 bauds).
   Serial.flush();       // Clear receive buffer.
   printHelp();          // Print the command list.
+  command.reserve(200);
 
   while (!Serial) {
   ; // wait for serial port to connect. Needed for native USB port only
   }
 }
+bool quick_serial() {
+  if (Serial.available()) {
+    mode = 9;
+    Serial.flush();
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
 void getMode() {
+  if (Serial.available()) {
+    char rx = (char)Serial.read();
+    Serial.print(rx);
+    Serial.flush();
+  }
+/*
   switch (step) {
     
     case 0:
@@ -60,29 +82,44 @@ void getMode() {
     step = 1;
     Serial.flush(); 
     Serial.println("Serial Restarted");
+    
+    
     case 1:
-
     if(Serial.available()) {
-      command = Serial.readStringUntil(' ');
-      Serial.flush(); 
-      step = 2;
-      Serial.print("Got the command ");
-      //Serial.print(command);
-    }
-    else {
-      Serial.println("Step 2");
+      char rx = (char)Serial.read();//StringUntil(' ');
+      Serial.flush();
+      Serial.print(rx);
+      if (rx == ' ') {
+        step = 2;
+        Serial.print("Got the command ");
+        delay(30);
+      }
+      else if (rx == '\n') {
+        step = 0;
+      }
+      else {
+        command += rx;
+      }
     }
     break;
 
     case 2:
     if(Serial.available()) {
-      value = Serial.readStringUntil('/n');
-      Serial.flush(); 
-      step = command[0];
+      char rx = (char)Serial.read();//StringUntil(' ');
+      Serial.flush();
+      Serial.println(rx);
+      if (rx == '\n') {
+        step = command[0];
+        Serial.println("HELLO I AM HERE");
+      }
+      else if (char(rx) == ' ') {
+        //step = 0;
+      }
+      else {
+        value += char(rx);
+        Serial.print(rx);
+      }
       //Serial.print(command+value);
-    }
-    else {
-      Serial.println("Step 3");
     }
     break;
 
@@ -144,31 +181,47 @@ void getMode() {
       Serial.println("' is not a command!");
       step = 0;
     
-  }
+  }*/
   
 }
 
 void loop() {
-  getMode();
-  
-  if(1) {
+ 
+  switch (mode) {
+    case 0:
     chase_mode();
-  }
-  else {
+    break;
+
+    case 1:
     pallette();
+    break;
+
+    case 2:
+    //twinkle();
+    break;
+
+    case 3:
+    //twinkle(BG_ON);
+    break;
+
+    case 9:  //SERIAL COMMANDS
+    getMode();
+    break;
   }
+
 }
 
 void chase_mode() {
   int skip = int(ceil((NUM_LEDS-1)/length));  //dictates how far apart injections are TODO make dynamic
+  
   for(int i = 0; i < NUM_LEDS; i++) {
 
     for(int x = 0; x < NUM_LEDS; x=(x+skip)) {  //writes color to all LEDs
       leds[(i+x)%NUM_LEDS] = ColorFromPalette(RainbowColors_p, color_id, brightness, LINEARBLEND);
       //color_id++;  //if increment here you yet a rainbow effect
-      getMode();
     }
-    
+    if (quick_serial()) {break;}
+  
     leds.fadeToBlackBy(decay);
     FastLED.show();
     FastLED.delay(1000/speed);
