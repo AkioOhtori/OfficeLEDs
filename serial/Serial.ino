@@ -1,32 +1,36 @@
 /*Serial_LED_02.ino  Arduining 4 May 2015
 Controlling the LED in pin 13 with the Serial Monitor.
 --- Command list: ---
-? -> Print this HELP 
-a -> LED On  "activate"
-d -> LED Off "deactivate"
-s -> LED     "status" 
+mode
+brightness
+length
+speed
+pattern
+favorite
 
 Example using the switch statement.
 */
-char mode = 'a';
+char mode = 0;
 #define LED 13          // Pin 13 is connected to the LED
-char rxChar[256];         // RXcHAR holds the received command.
+String rxChar;         // RXcHAR holds the received command.
+String command = "";
+String value = "";
 
 //=== function to print the command list:  ===========================
 void printHelp(void){
   Serial.println("--- Command list: ---");
-  Serial.println("? -> Print this HELP");  
-  Serial.println("a -> LED On  \"activate\"");
-  Serial.println("d -> LED Off \"deactivate\"");
-  Serial.println("s -> LED     \"status\"");  
+  //Serial.println("? -> Print this HELP");  
+  //Serial.println("a -> LED On  \"activate\"");
+  //Serial.println("d -> LED Off \"deactivate\"");
+  //Serial.println("s -> LED     \"status\"");  
   }
   
 //---------------- setup ---------------------------------------------
 void setup(){
   Serial.begin(9600);   // Open serial port (9600 bauds).
-  pinMode(LED, OUTPUT); // Sets pin 13 as OUTPUT.
   Serial.flush();       // Clear receive buffer.
   printHelp();          // Print the command list.
+
   while (!Serial) {
   ; // wait for serial port to connect. Needed for native USB port only
   }
@@ -34,54 +38,64 @@ void setup(){
 
 //--------------- loop ----------------------------------------------- 
 void loop(){
-  if (Serial.available() >0){          // Check receive buffer.
-    rxChar = Serial.readStringUntil(' ');            // Save character received.
-    Serial.println(rxChar);
-    Serial.flush();                    // Clear receive buffer.
-  
-  }
-  if (rxChar == "switch") {
-    Serial.println("I got a command to switch modes!");
-    mode = 'A';
-  }
-/*
+
+
   switch (mode) {
     
-    case 'a':
-    case 'A':                          // If received 'a' or 'A':
-	if (digitalRead(LED) == LOW){        // If LED is Off:
-          digitalWrite(LED,HIGH);      // Turn On the LED.
-          Serial.println("LED turned On");
-	}
-        else Serial.println("LED already On!");
-        break;
+    case 0:
+    if(Serial.available()) {
+      command = Serial.readStringUntil(' ');
+      mode++;
+      Serial.print("Got the command");
+      Serial.print(command);
+      Serial.flush(); 
+    }
+    break;
 
-    case 'd':
-    case 'D':                          // If received 'd' or 'D':
-	if (digitalRead(LED) == HIGH){       // If LED is On:
-          digitalWrite(LED,LOW);       // Turn Off the LED.
-          Serial.println("LED turned Off");
-	}
-        else Serial.println("LED already Off!");
-        break;
-        
-    case 's':
-    case 'S':                          // If received  's' or 'S':
-	if (digitalRead(LED) == HIGH)        // Read LED status.
-          Serial.println("LED status: On");
-        else Serial.println("LED status: Off");
-        break;
-        
-    case '?':                          // If received a ?:
-        printHelp();                   // print the command list.
-        break;
+    case 1:
+    if(Serial.available()) {
+      value = Serial.readStringUntil('/n');
+      mode = command[0];
+      Serial.print(command+value);
+      Serial.flush(); 
+    }
+    break;
+
+    case 'm':  //MODE
+    //change the mode, yo
+    mode = 0;
+    break;
+
+    case 'b':  //BRIGHTNESS
+    //change the brightness, yo
+    mode = 0;
+    break;
+
+    case 's': //SPEED
+    case 'S':
+    mode = 0;
+    break;
+
+    case 'l': //length
+    mode = 0;
+    break;
+
+    case 'p': //PATTERN
+    mode = 0;
+    break;
+
+    case 'f': //favorites
+    mode = 0;
+    break;
+
         
     default:                           
       Serial.print("'");
       //Serial.print((char)rxChar);
       Serial.println("' is not a command!");
+      mode = 0;
     
-  }*/
+  }
   
 }
 
