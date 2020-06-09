@@ -5,13 +5,13 @@
 #endif
 
 
-#define NUM_LEDS      100
-#define LED_TYPE   WS2811
+#define NUM_LEDS      600
+#define LED_TYPE   WS2812B
 #define COLOR_ORDER   GRB
-#define DATA_PIN        3
+#define DATA_PIN        6
 //#define CLK_PIN       4
-#define VOLTS          12
-#define MAX_MA       4000
+#define VOLTS          5
+#define MAX_MA       10000
 
 //  TwinkleFOX: Twinkling 'holiday' lights that fade in and out.
 //  Colors are chosen from a palette; a few palettes are provided.
@@ -78,15 +78,15 @@ CRGBArray<NUM_LEDS> leds;
 // Overall twinkle speed.
 // 0 (VERY slow) to 8 (VERY fast).  
 // 4, 5, and 6 are recommended, default is 4.
-#define TWINKLE_SPEED 4
+#define TWINKLE_SPEED 3
 
 // Overall twinkle density.
 // 0 (NONE lit) to 8 (ALL lit at once).  
 // Default is 5.
-#define TWINKLE_DENSITY 5
+#define TWINKLE_DENSITY 2
 
 // How often to change color palettes.
-#define SECONDS_PER_PALETTE  30
+#define SECONDS_PER_PALETTE  15
 // Also: toward the bottom of the file is an array 
 // called "ActivePaletteList" which controls which color
 // palettes are used; you can add or remove color palettes

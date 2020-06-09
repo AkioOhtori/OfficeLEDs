@@ -1,16 +1,16 @@
 #include <FastLED.h>
 
 #define LED_PIN     6
-#define NUM_LEDS    300
+#define NUM_LEDS    600
 #define BRIGHTNESS  64
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 CRGB leds[NUM_LEDS];
 #define GOOD_ORANGE 0xff5a00
 uint8_t n = 0;
-#define RATELIMIT 8 //TODO make variable
-#define CYCLES NUM_LEDS*RATELIMIT
-#define UPDATES_PER_SECOND 1  //TODO make variable, dynamic
+//#define RATELIMIT 8 //TODO make variable
+//#define CYCLES NUM_LEDS*RATELIMIT
+#define UPDATES_PER_SECOND 1000  //TODO make variable, dynamic
 
 // This example shows several ways to set up and use 'palettes' of colors
 // with FastLED.
@@ -55,7 +55,7 @@ void setup() {
     FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
     FastLED.setBrightness(  BRIGHTNESS );
     n = 0;
-    currentPalette = RainbowColors_p;
+    currentPalette = PartyColors_p;
     currentBlending = LINEARBLEND;
 }
 
@@ -70,13 +70,14 @@ void loop()
     FillLEDsFromPaletteColors( startIndex);
     
     FastLED.show();
-    FastLED.delay(1000 / UPDATES_PER_SECOND);  //TODO Make this work more better
+    //FastLED.delay(1000 / UPDATES_PER_SECOND);  //TODO Make this work more better
 }
 
 void FillLEDsFromPaletteColors( uint8_t colorIndex)
 {
     uint8_t brightness = BRIGHTNESS;//255; //TODO make this a variable
-    fill_palette( leds, NUM_LEDS, n, 4, RainbowColors_p, BRIGHTNESS, LINEARBLEND);
+    fill_palette( leds, NUM_LEDS, n++, 4, currentPalette, BRIGHTNESS, LINEARBLEND);
+    //n++;
     //fill LED Array, size, index for movement, spread TODO, pallette TODO, brightness TODO, blending
 
     /*for( int i = 0; i < NUM_LEDS; i++) {
