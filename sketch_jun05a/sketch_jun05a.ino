@@ -10,7 +10,8 @@ int mode = 0;
 int brightness = 64;
 int speed = 100;
 int pattern = 5;
-int length = 8;
+int length = 1;
+int decay = 8;
 
 char step = 0;
 #define LED 13          // Pin 13 is connected to the LED
@@ -54,11 +55,11 @@ void getMode() {
   switch (step) {
     
     case 0:
-
     command = "";
     value = "";
     step = 1;
-
+    Serial.flush(); 
+    Serial.println("Serial Restarted");
     case 1:
 
     if(Serial.available()) {
@@ -66,7 +67,10 @@ void getMode() {
       Serial.flush(); 
       step = 2;
       Serial.print("Got the command ");
-      Serial.print(command);
+      //Serial.print(command);
+    }
+    else {
+      Serial.println("Step 2");
     }
     break;
 
@@ -75,7 +79,10 @@ void getMode() {
       value = Serial.readStringUntil('/n');
       Serial.flush(); 
       step = command[0];
-      Serial.print(command+value);
+      //Serial.print(command+value);
+    }
+    else {
+      Serial.println("Step 3");
     }
     break;
 
@@ -86,20 +93,36 @@ void getMode() {
 
     case 'b':  //BRIGHTNESS
     //change the brightness, yo
-    Serial.println(value);
+    //Serial.println(value);
     brightness = value.toInt();//std::stoi(value);
-    Serial.println("brightness ");
+    Serial.print("Brightness set to ");
     Serial.println(brightness);
     step = 0;
     break;
 
     case 's': //SPEED
     case 'S':
-
+    int s = value.toInt();
+    if (s <= 0) {  //TODO stopped?
+      s = 1;
+    }
+    speed = s;
+    Serial.print("Speed set to ");
+    Serial.println(speed);
     step = 0;
     break;
 
     case 'l': //length
+    int l = value.toInt();
+    if (l <= 1) {
+      l = 1;
+    }
+    else if (l > 32) {
+      l = 32;
+    }
+    length = l;
+    Serial.print("Length set to ");
+    Serial.println(length);
     step = 0;
     break;
 
@@ -111,6 +134,9 @@ void getMode() {
     step = 0;
     break;
 
+    case 'd': //decay/ tail length
+    step = 0;
+    break;
         
     default:                           
       Serial.print("'");
@@ -143,7 +169,7 @@ void chase_mode() {
       getMode();
     }
     
-    leds.fadeToBlackBy(8);
+    leds.fadeToBlackBy(decay);
     FastLED.show();
     FastLED.delay(1000/speed);
   }
