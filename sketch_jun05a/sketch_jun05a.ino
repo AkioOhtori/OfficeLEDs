@@ -5,35 +5,126 @@
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 CRGBArray<NUM_LEDS> leds;
+
+int mode = 0;
+int brightness = 64;
+int speed = 100;
+int pattern = 5;
+int length = 8;
+
+char step = 0;
+#define LED 13          // Pin 13 is connected to the LED
+String rxChar;         // RXcHAR holds the received command.
+String command = "";
+String value = "";
+
+/*
 #define BRIGHTNESS 64
 #define RATELIMIT 2 //TODO make variable
 #define CYCLES NUM_LEDS//*RATELIMIT
 #define UPDATES_PER_SECOND 100  //TODO make variable, dynamic
-
+*/
 //#define OFFSET 150
 uint8_t color_id = 0;  //Color palate index; TODO make controllable
-uint8_t len = 1;  //Defines the number of lit LEDs active at once; TODO make controlable
-int skip = int(ceil((NUM_LEDS-1)/len));  //dictates how far apart injections are TODO make dynamic
+//uint8_t len = 1;  //Defines the number of lit LEDs active at once; TODO make controlable
+//=== function to print the command list:  ===========================
+void printHelp(void) {
+  Serial.println("--- Command list: ---");
+  //Serial.println("? -> Print this HELP");  
+  //Serial.println("a -> LED On  \"activate\"");
+  //Serial.println("d -> LED Off \"deactivate\"");
+  //Serial.println("s -> LED     \"status\"");  
+}
 
 void setup() {
   delay(300); //safety delay
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
-  FastLED.setBrightness(  BRIGHTNESS );
+  FastLED.setBrightness(  brightness );
   printf("boop");
+
+  Serial.begin(9600);   // Open serial port (9600 bauds).
+  Serial.flush();       // Clear receive buffer.
+  printHelp();          // Print the command list.
+
+  while (!Serial) {
+  ; // wait for serial port to connect. Needed for native USB port only
+  }
 }
 void getMode() {
-  /*
-  mode = 0;
-  brightness = 128;
-  speed = 4;
-  pattern = 5;
-  spread = 8;
-  */
+  switch (step) {
+    
+    case 0:
+
+    command = "";
+    value = "";
+    step = 1;
+
+    case 1:
+
+    if(Serial.available()) {
+      command = Serial.readStringUntil(' ');
+      Serial.flush(); 
+      step = 2;
+      Serial.print("Got the command ");
+      Serial.print(command);
+    }
+    break;
+
+    case 2:
+    if(Serial.available()) {
+      value = Serial.readStringUntil('/n');
+      Serial.flush(); 
+      step = command[0];
+      Serial.print(command+value);
+    }
+    break;
+
+    case 'm':  //MODE
+    //change the mode, yo
+    step = 0;
+    break;
+
+    case 'b':  //BRIGHTNESS
+    //change the brightness, yo
+    Serial.println(value);
+    brightness = value.toInt();//std::stoi(value);
+    Serial.println("brightness ");
+    Serial.println(brightness);
+    step = 0;
+    break;
+
+    case 's': //SPEED
+    case 'S':
+
+    step = 0;
+    break;
+
+    case 'l': //length
+    step = 0;
+    break;
+
+    case 'p': //PATTERN
+    step = 0;
+    break;
+
+    case 'f': //favorites
+    step = 0;
+    break;
+
+        
+    default:                           
+      Serial.print("'");
+      Serial.print(command);
+      Serial.println("' is not a command!");
+      step = 0;
+    
+  }
+  
 }
 
 void loop() {
   getMode();
-
+  
   if(1) {
     chase_mode();
   }
@@ -43,15 +134,18 @@ void loop() {
 }
 
 void chase_mode() {
-  for(int i = 0; i < CYCLES; i++) {
-    int n = i;//int((i/RATELIMIT));  //advances LEDs (range = 0-NUM_LEDS)
+  int skip = int(ceil((NUM_LEDS-1)/length));  //dictates how far apart injections are TODO make dynamic
+  for(int i = 0; i < NUM_LEDS; i++) {
+
     for(int x = 0; x < NUM_LEDS; x=(x+skip)) {  //writes color to all LEDs
-      leds[(n+x)%NUM_LEDS] = ColorFromPalette(RainbowColors_p, color_id, BRIGHTNESS, LINEARBLEND);
+      leds[(i+x)%NUM_LEDS] = ColorFromPalette(RainbowColors_p, color_id, brightness, LINEARBLEND);
       //color_id++;  //if increment here you yet a rainbow effect
+      getMode();
     }
+    
     leds.fadeToBlackBy(8);
     FastLED.show();
-    FastLED.delay(1000/UPDATES_PER_SECOND);
+    FastLED.delay(1000/speed);
   }
   color_id = color_id + 16; //increment to the next palate TODO make controllabe
   return 0;
