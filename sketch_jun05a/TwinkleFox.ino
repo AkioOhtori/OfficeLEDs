@@ -4,15 +4,6 @@
 #warning "Requires FastLED 3.1 or later; check github for latest code."
 #endif
 
-
-#define NUM_LEDS      600
-#define LED_TYPE   WS2812B
-#define COLOR_ORDER   GRB
-#define DATA_PIN        6
-//#define CLK_PIN       4
-#define VOLTS          5
-#define MAX_MA       10000
-
 //  TwinkleFOX: Twinkling 'holiday' lights that fade in and out.
 //  Colors are chosen from a palette; a few palettes are provided.
 //
@@ -73,12 +64,13 @@
 //
 //  -Mark Kriegsman, December 2015
 
-CRGBArray<NUM_LEDS> leds;
+// CRGBArray<NUM_LEDS> leds;
 
 // Overall twinkle speed.
 // 0 (VERY slow) to 8 (VERY fast).  
 // 4, 5, and 6 are recommended, default is 4.
-#define TWINKLE_SPEED 3
+//#define TWINKLE_SPEED 3
+// uint8_t twinkle_speed = int(speed/100);
 
 // Overall twinkle density.
 // 0 (NONE lit) to 8 (ALL lit at once).  
@@ -86,7 +78,7 @@ CRGBArray<NUM_LEDS> leds;
 #define TWINKLE_DENSITY 2
 
 // How often to change color palettes.
-#define SECONDS_PER_PALETTE  15
+#define SECONDS_PER_PALETTE  1
 // Also: toward the bottom of the file is an array 
 // called "ActivePaletteList" which controls which color
 // palettes are used; you can add or remove color palettes
@@ -113,27 +105,27 @@ CRGB gBackgroundColor = CRGB::Black;
 CRGBPalette16 gCurrentPalette;
 CRGBPalette16 gTargetPalette;
 
-void setup() {
-  delay( 3000 ); //safety startup delay
-  FastLED.setMaxPowerInVoltsAndMilliamps( VOLTS, MAX_MA);
-  FastLED.addLeds<LED_TYPE,DATA_PIN,COLOR_ORDER>(leds, NUM_LEDS)
-    .setCorrection(TypicalLEDStrip);
-
+void tfsetup() {
   chooseNextColorPalette(gTargetPalette);
 }
 
 
-void loop()
+void twinkleFox()
 {
-  EVERY_N_SECONDS( SECONDS_PER_PALETTE ) { 
-    chooseNextColorPalette( gTargetPalette ); 
+  quick_serial();
+
+  EVERY_N_SECONDS( SECONDS_PER_PALETTE ) {   //TODO
+    // chooseNextColorPalette( gTargetPalette ); 
+    //changePalette();
   }
+
+  //gTargetPalette = *ActivePaletteList[pattern];
   
   EVERY_N_MILLISECONDS( 10 ) {
     nblendPaletteTowardPalette( gCurrentPalette, gTargetPalette, 12);
   }
 
-  drawTwinkles( leds);
+  drawTwinkles(leds);
   
   FastLED.show();
 }
@@ -220,7 +212,7 @@ void drawTwinkles( CRGBSet& L)
 //  should light at all during this cycle, based on the TWINKLE_DENSITY.
 CRGB computeOneTwinkle( uint32_t ms, uint8_t salt)
 {
-  uint16_t ticks = ms >> (8-TWINKLE_SPEED);
+  uint16_t ticks = ms >> (10-(speed/16));
   uint8_t fastcycle8 = ticks;
   uint16_t slowcycle16 = (ticks >> 8) + salt;
   slowcycle16 += sin8( slowcycle16);
@@ -228,7 +220,10 @@ CRGB computeOneTwinkle( uint32_t ms, uint8_t salt)
   uint8_t slowcycle8 = (slowcycle16 & 0xFF) + (slowcycle16 >> 8);
   
   uint8_t bright = 0;
-  if( ((slowcycle8 & 0x0E)/2) < TWINKLE_DENSITY) {
+  //want len 1 == 1
+  //want len 32 == 8 
+  uint8_t len = (length/4) + 1;
+  if( ((slowcycle8 & 0x0E)/2) < (len)) {//TWINKLE_DENSITY) {
     bright = attackDecayWave8( fastcycle8);
   }
 
@@ -355,7 +350,6 @@ const TProgmemRGBPalette16 Ice_p FL_PROGMEM =
   Ice_Blue2, Ice_Blue2, Ice_Blue2, Ice_Blue3
 };
 
-
 // Add or remove palette names from this list to control which color
 // palettes are used, and in what order.
 const TProgmemRGBPalette16* ActivePaletteList[] = {
@@ -368,8 +362,12 @@ const TProgmemRGBPalette16* ActivePaletteList[] = {
   &RedWhite_p,
   &Snow_p,
   &Holly_p,
-  &Ice_p  
+  &Ice_p 
 };
+
+void changePalette(void) {
+  gTargetPalette = *(ActivePaletteList[pattern]);
+}
 
 
 // Advance to the next color palette in the list (above).

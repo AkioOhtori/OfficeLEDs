@@ -162,8 +162,10 @@ int temp;
     if (temp <= 1) {
       temp = 1;
     }
-    else if (temp > 32) {
-      temp = 32;
+    else if (temp > MAX_LEN) {
+      temp = MAX_LEN;
+      Serial.print("Max length is ");
+      Serial.println(MAX_LEN);
     }
     length = temp;
     Serial.print("Length set to: ");
@@ -172,6 +174,24 @@ int temp;
     break;
 
     case 'p': //PATTERN
+    if (value[0] == 'h')
+    {
+        Serial.println("TODO Help text!");
+    }
+    else {
+        uint8_t numberOfPalettes = sizeof(ActivePaletteList) / sizeof(ActivePaletteList[0]);
+        temp = value.toInt();
+        if (temp < 0) {
+            temp = 0;
+        }
+        else if (temp >= numberOfPalettes) {
+            temp = numberOfPalettes -1;
+        }
+        pattern = temp;
+        Serial.print("Pattern set to: #");
+        Serial.println(pattern);
+    }
+    
     step = 0;
     break;
 
@@ -199,6 +219,7 @@ int temp;
     break;
     
     case 'e': //exit!
+    case 'x':
     Serial.println("Exiting Serial mode!");
     Serial.println();
     step = 0;

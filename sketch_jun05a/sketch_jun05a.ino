@@ -11,7 +11,8 @@ int mode_new = 0;
 #define DEFAULT_BRIGHTNESS 64
 int brightness = DEFAULT_BRIGHTNESS;
 int speed = 100;
-int pattern = 16;
+int pattern = 0;
+#define MAX_LEN 32
 int length = 1;
 int decay = 16;
 bool rainbowchase = 1;
@@ -35,6 +36,8 @@ void setup() {
   Serial.flush();       // Clear receive buffer.
   printHelp();          // Print the command list.
   command.reserve(200);
+  
+  tfsetup();
 
   while (!Serial) {
   ; // wait for serial port to connect. Needed for native USB port only
@@ -54,7 +57,7 @@ void loop() {
     break;
 
     case 2:
-    //twinkle();
+    twinkleFox();
     break;
 
     case 3:

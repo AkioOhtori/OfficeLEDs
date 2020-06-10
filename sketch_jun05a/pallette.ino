@@ -45,12 +45,12 @@ CRGBPalette16 currentPalette;
 TBlendType    currentBlending;
 
 void pallette(void) {
-    currentPalette = RainbowColors_p;// HappyLights_p;
+    currentPalette = *ActivePaletteList[pattern];//RainbowColors_p;// HappyLights_p;
     currentBlending = LINEARBLEND;
 
     static uint8_t startIndex = 0;
 
-    fill_palette(leds, NUM_LEDS, colorIndex, length, currentPalette, brightness, LINEARBLEND);
+    fill_palette(leds, NUM_LEDS, startIndex, length, currentPalette, brightness, LINEARBLEND);
 
     if (quick_serial()) {return 0;}
 
