@@ -95,18 +95,18 @@ Each LED is a different color based on the pattern assigned, this can be switche
 If serial is detected by "quick_serial" this loop is abandoned
 */
 void chase_mode() {
-  int skip = int(ceil((NUM_LEDS-1)/length));  //dictates how far apart injections are TODO make dynamic
-  int skip_rainbow_inc = int(256/(length));  //if each LED is to be a different pallette color, that math is here
+  uint16_t skip = uint16_t(ceil((NUM_LEDS-1)/length));  //dictates how far apart injections are TODO make dynamic
+  uint16_t skip_rainbow_inc = uint16_t(256/(length));  //if each LED is to be a different pallette color, that math is here
 
-  uint8_t range = 0;
+  uint16_t range;
   if (speed <= 0) { range = 1; }
   else            { range = NUM_LEDS; }
 
   for ( int i = 0; i < range; i++ ) {  //main chase animation loop
 
-    int skip_rainbow = 0; //determines color for each active LED (sort of)
+    uint16_t skip_rainbow = 0; //determines color for each active LED (sort of)
 
-    for(int x = 0; x < NUM_LEDS; x=(x+skip)) {  //writes color to active LEDs
+    for(uint16_t x = 0; x < NUM_LEDS; x=(x+skip)) {  //writes color to active LEDs
       leds[(i+x)%NUM_LEDS] = ColorFromPalette(currentPalette, (color_id + (skip_rainbow)), brightness, LINEARBLEND);
       if(rainbowchase) {skip_rainbow = skip_rainbow + skip_rainbow_inc; }
     }

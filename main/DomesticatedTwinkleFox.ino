@@ -97,12 +97,12 @@ CRGB gBackgroundColor = CRGB::Black;
 // Example of dim incandescent fairy light background color
 // CRGB gBackgroundColor = CRGB(CRGB::FairyLight).nscale8_video(16);
 
-// If AUTO_SELECT_BACKGROUND_COLOR is set to 1,
+// If auto_bg is set to 1,
 // then for any palette where the first two entries 
 // are the same, a dimmed version of that color will
 // automatically be used as the background color.
-//#define AUTO_SELECT_BACKGROUND_COLOR 0
-bool AUTO_SELECT_BACKGROUND_COLOR = 0;
+//#define auto_bg 0
+bool auto_bg = 0;
 
 // If COOL_LIKE_INCANDESCENT is set to 1, colors will 
 // fade out slighted 'reddened', similar to how
@@ -152,7 +152,7 @@ void dTwinkleFox(bool bg) {
     
     // chooseNextColorPalette( gTargetPalette ); 
     changePalette();
-    AUTO_SELECT_BACKGROUND_COLOR = bg;
+    auto_bg = bg;
   }
 
   //gTargetPalette = *ActivePaletteList[pattern];
@@ -183,12 +183,11 @@ void drawTwinkles( CRGBSet& L)
   uint32_t clock32 = millis();
 
   // Set up the background color, "bg".
-  // if AUTO_SELECT_BACKGROUND_COLOR == 1, and the first two colors of
+  // if auto_bg == 1, and the first two colors of
   // the current palette are identical, then a deeply faded version of
   // that color is used for the background color
   CRGB bg;
-  if( (AUTO_SELECT_BACKGROUND_COLOR == 1) &&
-      (gCurrentPalette[0] == gCurrentPalette[1] )) {
+  if( (auto_bg == 1) ) {
     bg = gCurrentPalette[0];
     uint8_t bglight = bg.getAverageLight();
     if( bglight > 64) {
@@ -460,12 +459,19 @@ const TProgmemRGBPalette16 Indigo_p FL_PROGMEM =
   0x5500AB, 0x5500AB, 0x5500AB, 0x5500AB,
   0x5500AB, 0x5500AB, 0x5500AB, 0x5500AB};
 
+// const TProgmemRGBPalette16 Violet_p FL_PROGMEM =
+// {
+//   0xAB0055, 0xAB0055, 0xAB0055, 0xAB0055,
+//   0xAB0055, 0xAB0055, 0xAB0055, 0xAB0055,
+//   0xAB0055, 0xAB0055, 0xAB0055, 0xAB0055,
+//   0xAB0055, 0xAB0055, 0xAB0055, 0xAB0055};
+
 const TProgmemRGBPalette16 Violet_p FL_PROGMEM =
 {
-  0xAB0055, 0xAB0055, 0xAB0055, 0xAB0055,
-  0xAB0055, 0xAB0055, 0xAB0055, 0xAB0055,
-  0xAB0055, 0xAB0055, 0xAB0055, 0xAB0055,
-  0xAB0055, 0xAB0055, 0xAB0055, 0xAB0055};
+  0x800080, 0x800080, 0x800080, 0x800080,
+  0x800080, 0x800080, 0x800080, 0x800080,
+  0x800080, 0x800080, 0x800080, 0x800080,
+  0x800080, 0x800080, 0x800080, 0x800080};
 
 const TProgmemRGBPalette16 Pink_p FL_PROGMEM =
 {
@@ -477,35 +483,6 @@ const TProgmemRGBPalette16 Pink_p FL_PROGMEM =
 
 // Add or remove palette names from this list to control which color
 // palettes are used, and in what order.
-/*
-extern const TProgmemRGBPalette16* ActivePaletteList[] = {
-  &Red_p,             //0
-  &Orange_p,
-  &Yellow_p,
-  &YellowGreen_p,     //3 Could be replaced
-  &Green_p,
-  &Aqua_p,            //5
-  &Blue_p,
-  &Indigo_p,
-  &Violet_p,          //8 Could be replaced
-  &Pink_p,
-  &RetroC9_p,         //10
-  &BlueWhite_p,       //11 
-  &RainbowColors_p,
-  &FairyLight_p,      //13 - Creamy white twinkle
-  &RedGreenWhite_p,   //14 - very XMas
-  &PartyColors_p,     //15
-  &RedWhite_p,
-  &Snow_p,            //17 - Cool white
-  &Holly_p,           //18 - Green with a hint of red
-  &HappyLights_p,
-  &FireLights_p,      //20
-  &LavaColors_p,      //21 Red orange and white for some reason (CAN RP)
-  &ForestColors_p,    //22 - Green and white
-  &CloudColors_p,     //23 - SAME AS BLUE WHITE  TODO RP
-  &OceanColors_p,     //24 - Blue white with more teal
-  &Ice_p              //25 - Chill blue
-};*/
 
 extern const TProgmemRGBPalette16* ActivePaletteList[] = {
   &Red_p,             //0
