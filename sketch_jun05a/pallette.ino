@@ -1,16 +1,7 @@
 #include <FastLED.h>
 
-#define LED_PIN     6
-#define NUM_LEDS    600
-#define BRIGHTNESS  64
-#define LED_TYPE    WS2812B
-#define COLOR_ORDER GRB
-CRGB leds[NUM_LEDS];
 #define GOOD_ORANGE 0xff5a00
 uint8_t n = 0;
-//#define RATELIMIT 8 //TODO make variable
-//#define CYCLES NUM_LEDS*RATELIMIT
-#define UPDATES_PER_SECOND 1000  //TODO make variable, dynamic
 
 // This example shows several ways to set up and use 'palettes' of colors
 // with FastLED.
@@ -44,39 +35,40 @@ const TProgmemRGBPalette16 FireLights_p FL_PROGMEM =
    CRGB::Red, CRGB::Black, CRGB::DarkGoldenrod, CRGB::Black, 
    CRGB::Red, CRGB::Black, CRGB::DarkGoldenrod, CRGB::Black, 
    CRGB::Red, CRGB::Black, CRGB::DarkGoldenrod, CRGB::Black };*/
-CRGBPalette16 currentPalette;
-TBlendType    currentBlending;
+
+
 
 extern CRGBPalette16 myRedWhiteBluePalette;
 extern const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM;
-  
-void setup() {
-    delay( 3000 ); // power-up safety delay
-    FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
-    FastLED.setBrightness(  BRIGHTNESS );
-    n = 0;
-    currentPalette = PartyColors_p;
+
+CRGBPalette16 currentPalette;
+TBlendType    currentBlending;
+
+void pallette(void) {
+    currentPalette = RainbowColors_p;// HappyLights_p;
     currentBlending = LINEARBLEND;
-}
 
-
-void loop()
-{
-    //ChangePalettePeriodically();
-    
     static uint8_t startIndex = 0;
-    startIndex = int(startIndex + 1);//n/RATELIMIT); /* motion speed */
 
-    FillLEDsFromPaletteColors( startIndex);
-    
+    fill_palette(leds, NUM_LEDS, colorIndex, length, currentPalette, brightness, LINEARBLEND);
+
+    if (quick_serial()) {return 0;}
+
     FastLED.show();
-    //FastLED.delay(1000 / UPDATES_PER_SECOND);  //TODO Make this work more better
+
+    if (speed > 0) {
+        startIndex = (startIndex + 1);
+        FastLED.delay(1000/ speed);
+        }
+    else {
+        FastLED.delay(100);
+    }
 }
 
 void FillLEDsFromPaletteColors( uint8_t colorIndex)
-{
-    uint8_t brightness = BRIGHTNESS;//255; //TODO make this a variable
-    fill_palette( leds, NUM_LEDS, n++, 4, currentPalette, BRIGHTNESS, LINEARBLEND);
+{  
+    // uint8_t brightness = BRIGHTNESS;//255; //TODO make this a variable
+    fill_palette(leds, NUM_LEDS, colorIndex, length, currentPalette, brightness, LINEARBLEND);
     //n++;
     //fill LED Array, size, index for movement, spread TODO, pallette TODO, brightness TODO, blending
 
@@ -94,7 +86,7 @@ void FillLEDsFromPaletteColors( uint8_t colorIndex)
 //
 // Additionally, you can manually define your own color palettes, or you can write
 // code that creates color palettes on the fly.  All are shown here.
-
+/*
 void ChangePalettePeriodically()
 {
     uint8_t secondHand = (millis() / 1000) % 60;
@@ -114,7 +106,7 @@ void ChangePalettePeriodically()
         if( secondHand == 50)  { currentPalette = myRedWhiteBluePalette_p; currentBlending = NOBLEND;  }
         if( secondHand == 55)  { currentPalette = myRedWhiteBluePalette_p; currentBlending = LINEARBLEND; }
     }
-}
+}*/
 
 // This function fills the palette with totally random colors.
 void SetupTotallyRandomPalette()
