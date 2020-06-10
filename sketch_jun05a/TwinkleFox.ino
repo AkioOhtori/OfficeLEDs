@@ -4,6 +4,13 @@
 #warning "Requires FastLED 3.1 or later; check github for latest code."
 #endif
 
+//This code is based on TwinkleFox and adapted for use in my "OfficeLED"
+//system. Changes are predominantly addition of pallets and external control.
+//Credit to Mark Kriegsman for the 99% of the code contained herein.
+//Calling this adaptation "Domesticated Twinkle Fox" because I thought
+//it was cute and much like domesticated foxes somtimes it pisses itself
+//for no reason. -Akio 2020
+
 //  TwinkleFOX: Twinkling 'holiday' lights that fade in and out.
 //  Colors are chosen from a palette; a few palettes are provided.
 //
@@ -69,16 +76,16 @@
 // Overall twinkle speed.
 // 0 (VERY slow) to 8 (VERY fast).  
 // 4, 5, and 6 are recommended, default is 4.
-//#define TWINKLE_SPEED 3
+//#define TWINKLE_SPEED 3  //rm2020 controlled by "speed" parameter now
 // uint8_t twinkle_speed = int(speed/100);
 
 // Overall twinkle density.
 // 0 (NONE lit) to 8 (ALL lit at once).  
 // Default is 5.
-#define TWINKLE_DENSITY 2
+//#define TWINKLE_DENSITY 2  //rm2020 controlled by "length" now
 
 // How often to change color palettes.
-#define SECONDS_PER_PALETTE  1
+#define SECONDS_PER_PALETTE  1  //hijaced for other purposes
 // Also: toward the bottom of the file is an array 
 // called "ActivePaletteList" which controls which color
 // palettes are used; you can add or remove color palettes
@@ -106,12 +113,39 @@ bool AUTO_SELECT_BACKGROUND_COLOR = 0;
 CRGBPalette16 gCurrentPalette;
 CRGBPalette16 gTargetPalette;
 
+// CRGBPalette16 Red_p;
+// // CRGBPalette16 RedOrange_p = purplefly_gp;
+// CRGBPalette16 RedOrange_p;
+// CRGBPalette16 Orange_p;
+// CRGBPalette16 Yellow_p;
+// CRGBPalette16 YellowGreen_p;
+// CRGBPalette16 Green_p;
+// CRGBPalette16 GreenBlue_p;
+// CRGBPalette16 Blue_p;
+// CRGBPalette16 Indigo_p;
+// CRGBPalette16 Violet_p;
+
+
+
 void tfsetup() {
+  // int temp = 0;
   chooseNextColorPalette(gTargetPalette);
+  // fill_solid( Red_p, 16, CRGB::Red);
+  // RedOrange_p = purplefly_gp;
+  // temp = ColorFromPalette(RainbowColors_p, 8, 255, LINEARBLEND);
+  // fill_solid( RedOrange_p, 16, temp);
+  // fill_solid( Orange_p, 16, CRGB::Red);
+  // fill_solid( Yellow_p, 16, CRGB::Red);
+  // fill_solid( YellowGreen_p, 16, CRGB::Red);
+  // fill_solid( Green_p, 16, CRGB::Red);
+  // fill_solid( GreenBlue_p, 16, CRGB::Red);
+  // fill_solid( Blue_p, 16, CRGB::Red);
+  // fill_solid( Indigo_p, 16, CRGB::Red);
+  // fill_solid( Violet_p, 16, CRGB::Red);
 }
 
 
-void twinkleFox(bool bg) {
+void dTwinkleFox(bool bg) {
   quick_serial();
   
   EVERY_N_SECONDS( SECONDS_PER_PALETTE ) {   //TODO
@@ -214,7 +248,7 @@ void drawTwinkles( CRGBSet& L)
 //  should light at all during this cycle, based on the TWINKLE_DENSITY.
 CRGB computeOneTwinkle( uint32_t ms, uint8_t salt)
 {
-  uint16_t ticks = ms >> (10-(speed/16));
+  uint16_t ticks = ms >> (10-(speed/100));
   uint8_t fastcycle8 = ticks;
   uint16_t slowcycle16 = (ticks >> 8) + salt;
   slowcycle16 += sin8( slowcycle16);
@@ -353,6 +387,12 @@ const TProgmemRGBPalette16 Ice_p FL_PROGMEM =
 };
 
 const TProgmemRGBPalette16 HappyLights_p FL_PROGMEM =
+{  CRGB::Cyan, CRGB::DarkViolet, CRGB::Lime, CRGB::Cyan, 
+   CRGB::DarkViolet, CRGB::Cyan, CRGB::Lime, CRGB::DarkViolet, 
+   CRGB::Red, CRGB::Cyan, CRGB::Lime, CRGB::DarkViolet, 
+   CRGB::Lime, CRGB::DarkViolet, CRGB::Cyan, CRGB::Red };
+
+const TProgmemRGBPalette16 HappyLightsOld_p FL_PROGMEM =
 {  CRGB::Cyan, CRGB::Black, CRGB::Black, CRGB::Lime, 
    CRGB::Black, CRGB::Cyan, CRGB::Black, CRGB::Black, 
    CRGB::DarkViolet, CRGB::Black, CRGB::Black, CRGB::Lime, 
@@ -364,29 +404,150 @@ const TProgmemRGBPalette16 FireLights_p FL_PROGMEM =
    CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Black, 
    GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE, CRGB::Black };
 
+
+/* --- BEGIN SOLID COLOR "PALLETTES" --- */
+//This is a crap way to do this, but it keeps it simple
+const TProgmemRGBPalette16 Red_p FL_PROGMEM =
+{  CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Red, 
+   CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Red, 
+   CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Red, 
+   CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Red };
+
+const TProgmemRGBPalette16 Orange_p FL_PROGMEM =
+{
+  GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE,
+  GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE,
+  GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE,
+  GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE
+};
+
+const TProgmemRGBPalette16 Yellow_p FL_PROGMEM =
+{  CRGB::Yellow, CRGB::Yellow, CRGB::Yellow, CRGB::Yellow, 
+   CRGB::Yellow, CRGB::Yellow, CRGB::Yellow, CRGB::Yellow, 
+   CRGB::Yellow, CRGB::Yellow, CRGB::Yellow, CRGB::Yellow, 
+   CRGB::Yellow, CRGB::Yellow, CRGB::Yellow, CRGB::Yellow };
+
+const TProgmemRGBPalette16 YellowGreen_p FL_PROGMEM =
+{
+  0x56D500, 0x56D500, 0x56D500, 0x56D500,
+  0x56D500, 0x56D500, 0x56D500, 0x56D500,
+  0x56D500, 0x56D500, 0x56D500, 0x56D500,
+  0x56D500, 0x56D500, 0x56D500, 0x56D500};
+
+const TProgmemRGBPalette16 Green_p FL_PROGMEM =
+{  CRGB::Green, CRGB::Green, CRGB::Green, CRGB::Green, 
+   CRGB::Green, CRGB::Green, CRGB::Green, CRGB::Green, 
+   CRGB::Green, CRGB::Green, CRGB::Green, CRGB::Green, 
+   CRGB::Green, CRGB::Green, CRGB::Green, CRGB::Green };
+
+const TProgmemRGBPalette16 Aqua_p FL_PROGMEM =
+{
+  0x00AB55, 0x00AB55, 0x00AB55, 0x00AB55,
+  0x00AB55, 0x00AB55, 0x00AB55, 0x00AB55,
+  0x00AB55, 0x00AB55, 0x00AB55, 0x00AB55,
+  0x00AB55, 0x00AB55, 0x00AB55, 0x00AB55};
+
+const TProgmemRGBPalette16 Blue_p FL_PROGMEM =
+{  CRGB::Blue, CRGB::Blue, CRGB::Blue, CRGB::Blue, 
+   CRGB::Blue, CRGB::Blue, CRGB::Blue, CRGB::Blue, 
+   CRGB::Blue, CRGB::Blue, CRGB::Blue, CRGB::Blue, 
+   CRGB::Blue, CRGB::Blue, CRGB::Blue, CRGB::Blue };
+
+const TProgmemRGBPalette16 Indigo_p FL_PROGMEM =
+{
+  0x5500AB, 0x5500AB, 0x5500AB, 0x5500AB,
+  0x5500AB, 0x5500AB, 0x5500AB, 0x5500AB,
+  0x5500AB, 0x5500AB, 0x5500AB, 0x5500AB,
+  0x5500AB, 0x5500AB, 0x5500AB, 0x5500AB};
+
+const TProgmemRGBPalette16 Violet_p FL_PROGMEM =
+{
+  0xAB0055, 0xAB0055, 0xAB0055, 0xAB0055,
+  0xAB0055, 0xAB0055, 0xAB0055, 0xAB0055,
+  0xAB0055, 0xAB0055, 0xAB0055, 0xAB0055,
+  0xAB0055, 0xAB0055, 0xAB0055, 0xAB0055};
+
+const TProgmemRGBPalette16 Pink_p FL_PROGMEM =
+{
+  0xD5002B, 0xD5002B, 0xD5002B, 0xD5002B,
+  0xD5002B, 0xD5002B, 0xD5002B, 0xD5002B,
+  0xD5002B, 0xD5002B, 0xD5002B, 0xD5002B,
+  0xD5002B, 0xD5002B, 0xD5002B, 0xD5002B};
+
+
 // Add or remove palette names from this list to control which color
 // palettes are used, and in what order.
-const TProgmemRGBPalette16* ActivePaletteList[] = {
-  &RetroC9_p,
-  &BlueWhite_p,
+/*
+extern const TProgmemRGBPalette16* ActivePaletteList[] = {
+  &Red_p,             //0
+  &Orange_p,
+  &Yellow_p,
+  &YellowGreen_p,     //3 Could be replaced
+  &Green_p,
+  &Aqua_p,            //5
+  &Blue_p,
+  &Indigo_p,
+  &Violet_p,          //8 Could be replaced
+  &Pink_p,
+  &RetroC9_p,         //10
+  &BlueWhite_p,       //11 
   &RainbowColors_p,
-  &FairyLight_p,
-  &RedGreenWhite_p,
-  &PartyColors_p,
+  &FairyLight_p,      //13 - Creamy white twinkle
+  &RedGreenWhite_p,   //14 - very XMas
+  &PartyColors_p,     //15
   &RedWhite_p,
-  &Snow_p,
-  &Holly_p,
-  &HappyLights_p
-  &FireLights_p
-  &LavaColors_p,
-  &ForestColors_p,
-  &CloudColors_p,
-  &OceanColors_p,
-  &Ice_p 
+  &Snow_p,            //17 - Cool white
+  &Holly_p,           //18 - Green with a hint of red
+  &HappyLights_p,
+  &FireLights_p,      //20
+  &LavaColors_p,      //21 Red orange and white for some reason (CAN RP)
+  &ForestColors_p,    //22 - Green and white
+  &CloudColors_p,     //23 - SAME AS BLUE WHITE  TODO RP
+  &OceanColors_p,     //24 - Blue white with more teal
+  &Ice_p              //25 - Chill blue
+};*/
+
+extern const TProgmemRGBPalette16* ActivePaletteList[] = {
+  &Red_p,             //0
+  &Orange_p,
+  &Yellow_p,
+  &YellowGreen_p,     //3 Could be replaced
+  &Green_p,
+  &Aqua_p,            //5
+  &Blue_p,
+  &Indigo_p,
+  &Violet_p,          //8 Could be replaced
+  &Pink_p,            //9
+
+  //Good stuff!
+  &RainbowColors_p,   //10
+  &HappyLights_p,
+  &PartyColors_p,
+  &RetroC9_p,
+  &ForestColors_p,    //14 - Green and white
+
+  //Whites/ blues
+  &FairyLight_p,      //15 - Creamy white twinkle
+  &Snow_p,            //xx - Cool white
+  &OceanColors_p,     //xx - Blue white with more teal
+  &Ice_p,             //xx - Chill blue
+  &BlueWhite_p,
+
+  //Reds
+  &FireLights_p,      //20
+  &LavaColors_p,      //xx Red orange and white for some reason (CAN RP)
+
+  //Other
+  
+  //XMAS
+  &RedGreenWhite_p,   //xx - very XMas
+  &Holly_p,           //23 - Green with a hint of red
+  &RedWhite_p
 };
 
 void changePalette(void) {
   gTargetPalette = *(ActivePaletteList[pattern]);
+  // currentPalette = *ActivePaletteList[pattern];
 }
 
 

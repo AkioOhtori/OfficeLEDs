@@ -23,12 +23,9 @@ uint8_t n = 0;
 extern CRGBPalette16 myRedWhiteBluePalette;
 extern const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM;
 
-CRGBPalette16 currentPalette;
-TBlendType    currentBlending;
-
 void pallette(void) {
-    currentPalette = *ActivePaletteList[pattern];//RainbowColors_p;// HappyLights_p;
-    currentBlending = LINEARBLEND;
+    // currentPalette = *ActivePaletteList[pattern];
+    currentBlending = LINEARBLEND; //TODO make... better
 
     static uint8_t startIndex = 0;
 

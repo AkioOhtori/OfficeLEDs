@@ -5,7 +5,7 @@ bool quick_serial(void) {
     delay(100);
     Serial.readStringUntil('\n');
     mode_new = mode;
-    mode = 9;
+    mode = SERIAL_MODE;
     Serial.flush();
     Serial.println("Serial Mode Active! ");
     return 1;
@@ -16,15 +16,44 @@ bool quick_serial(void) {
 }
 
 void printHelp(void) {
-  Serial.println("----------- COMMANDS -----------");
-  Serial.println("'help' -> Prints this message");
-  Serial.println("'mode 0-9' -> Set LED animation mode");
-  Serial.println("'brightness 0 - 255' -> Set LED brightness");
-  Serial.println("'pattern ?? - ??' -> Set LED pattern/color");
-  Serial.println("'speed 0 - 100' -> Set LED animation speed (Higher is faster)");
-  Serial.println("'decay 0 - 256' -> Set duration of LED fade out (Higher is faster");
-  Serial.println("'length 1 - 32' -> Set LED pattern length");
-  Serial.println("Use 'exit' to exit serial and 'off' (or 'on') to toggle LEDs");
+    Serial.println("----------- COMMANDS -----------");
+    Serial.println("'help' -> Prints this message");
+    Serial.println("'mode 0-9' -> Set LED animation mode");
+    Serial.println("'brightness 0 - 255' -> Set LED brightness");
+    Serial.println("'pattern ?? - ??' -> Set LED pattern/color");
+    Serial.println("'speed 0 - 100' -> Set LED animation speed (Higher is faster)");
+    Serial.println("'decay 0 - 256' -> Set duration of LED fade out (Higher is faster");
+    Serial.println("'length 1 - 32' -> Set LED pattern length");
+    Serial.println("Use 'exit' to exit serial and 'off' (or 'on') to toggle LEDs");
+}
+void printPatterns(void) {
+    Serial.println("----------- PATTERNS -----------");
+    Serial.println("0 through 9 = Red through Pink");
+    Serial.println("10 - Rainbow");
+    Serial.println("11 - Happy Lights!");
+    Serial.println("12 - Party!");
+    Serial.println("13 - Retro XMas");
+    Serial.println("14 - Forest Colors");
+    Serial.println("15 - Fairy Lights (creamy white)");
+    Serial.println("16 - Cool White Snow");
+    Serial.println("17 - Oceal (blue, white, teal)");
+    Serial.println("18 - Icey Blues");
+    Serial.println("19 - Blue Clouds");
+    Serial.println("20 - Orange and Red Fire");
+    Serial.println("21 - Lava (fire+white)");
+    Serial.println("22 - Green and White");
+    Serial.println("23 - Holly");
+    Serial.println("24 - Red and White");
+    Serial.println("----------- PATTERNS -----------");
+}
+
+void printModes(void) {
+    Serial.println("----------- MODES -----------");
+    Serial.println("0 - LED Chase");
+    Serial.println("1 - Pallette Fill");
+    Serial.println("2 - Domesticated Twinkle Fox");
+    Serial.println("3 - Twinkle Fox w/ Auto Background");
+    Serial.println("----------- MODES -----------");
 }
 
 /* ~~~~~ SERIAL CONTROL OF MODES ~~~~ */
@@ -67,12 +96,8 @@ int temp;
         delay(1000);
       }
       else {
-        serialtimeout = TIMEOUT;
-        mode = mode_new;
-        Serial.println();
-        Serial.println("Serial Mode timed out!");
-        step = 0;
-        return 0;
+        Serial.println("Serial mode timed out!");
+        step = 'e';
       }
     break;
 
@@ -87,7 +112,7 @@ int temp;
         Serial.println(" - I'll give it a try!");
       }
       else if (char(rx) == ' ') {
-        step = 9;//char('e');
+        step = 9;
       }
       else {
         value += char(rx);
@@ -99,19 +124,27 @@ int temp;
       delay(1000);
     }
     else {
-      Serial.println();
-      Serial.println("Serial Mode timed out!");
+      Serial.println("Serial mode timed out!!");
       step = 'e';
     }
     break;
     
     case 'm':  //MODE
     //change the mode, yo
-    temp = value.toInt();
-    mode_new = temp; //TODO validation
-    Serial.println();
-    Serial.print("Mode set to: ");
-    Serial.println(mode_new);
+    if (value[0] == 'h')
+    {
+        printModes();
+    }
+    else {
+        temp = value.toInt();
+        if (temp == SERIAL_MODE) {
+            Serial.println("Are you TRYING to break this!?");
+            temp = mode_new;
+        }
+        mode_new = temp; //TODO validation
+        Serial.print("Mode set to: ");
+        Serial.println(mode_new);
+    }
     step = 0;
     break;
 
@@ -176,7 +209,7 @@ int temp;
     case 'p': //PATTERN
     if (value[0] == 'h')
     {
-        Serial.println("TODO Help text!");
+        printPatterns();
     }
     else {
         uint8_t numberOfPalettes = sizeof(ActivePaletteList) / sizeof(ActivePaletteList[0]);
@@ -188,6 +221,7 @@ int temp;
             temp = numberOfPalettes -1;
         }
         pattern = temp;
+        currentPalette = *ActivePaletteList[pattern];
         Serial.print("Pattern set to: #");
         Serial.println(pattern);
     }
@@ -221,7 +255,7 @@ int temp;
     case 'e': //exit!
     case 'x':
     Serial.println("Exiting Serial mode!");
-    Serial.println();
+    Serial.println("-~- Press enter to enter serial mode -~-");
     step = 0;
     mode = mode_new;
     break;
@@ -230,7 +264,7 @@ int temp;
     Serial.println();
     Serial.print("'");
     Serial.print(command);
-    Serial.println("' is not a valid command!");
+    Serial.println("' is not a valid command! T_T");
     step = 0;
     serialtimeout = TIMEOUT;
     break;
