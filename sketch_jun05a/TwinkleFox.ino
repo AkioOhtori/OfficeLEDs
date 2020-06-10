@@ -1,5 +1,5 @@
 #include "FastLED.h"
-
+#define GOOD_ORANGE 0xff5a00
 #if defined(FASTLED_VERSION) && (FASTLED_VERSION < 3001000)
 #warning "Requires FastLED 3.1 or later; check github for latest code."
 #endif
@@ -94,7 +94,8 @@ CRGB gBackgroundColor = CRGB::Black;
 // then for any palette where the first two entries 
 // are the same, a dimmed version of that color will
 // automatically be used as the background color.
-#define AUTO_SELECT_BACKGROUND_COLOR 0
+//#define AUTO_SELECT_BACKGROUND_COLOR 0
+bool AUTO_SELECT_BACKGROUND_COLOR = 0;
 
 // If COOL_LIKE_INCANDESCENT is set to 1, colors will 
 // fade out slighted 'reddened', similar to how
@@ -110,13 +111,14 @@ void tfsetup() {
 }
 
 
-void twinkleFox()
-{
+void twinkleFox(bool bg) {
   quick_serial();
-
+  
   EVERY_N_SECONDS( SECONDS_PER_PALETTE ) {   //TODO
+    
     // chooseNextColorPalette( gTargetPalette ); 
-    //changePalette();
+    changePalette();
+    AUTO_SELECT_BACKGROUND_COLOR = bg;
   }
 
   //gTargetPalette = *ActivePaletteList[pattern];
@@ -350,6 +352,18 @@ const TProgmemRGBPalette16 Ice_p FL_PROGMEM =
   Ice_Blue2, Ice_Blue2, Ice_Blue2, Ice_Blue3
 };
 
+const TProgmemRGBPalette16 HappyLights_p FL_PROGMEM =
+{  CRGB::Cyan, CRGB::Black, CRGB::Black, CRGB::Lime, 
+   CRGB::Black, CRGB::Cyan, CRGB::Black, CRGB::Black, 
+   CRGB::DarkViolet, CRGB::Black, CRGB::Black, CRGB::Lime, 
+   CRGB::Black, CRGB::DarkViolet, CRGB::Black, CRGB::Black };
+
+const TProgmemRGBPalette16 FireLights_p FL_PROGMEM =
+{  CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Black, 
+   GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE, CRGB::Black, 
+   CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Black, 
+   GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE, CRGB::Black };
+
 // Add or remove palette names from this list to control which color
 // palettes are used, and in what order.
 const TProgmemRGBPalette16* ActivePaletteList[] = {
@@ -362,6 +376,12 @@ const TProgmemRGBPalette16* ActivePaletteList[] = {
   &RedWhite_p,
   &Snow_p,
   &Holly_p,
+  &HappyLights_p
+  &FireLights_p
+  &LavaColors_p,
+  &ForestColors_p,
+  &CloudColors_p,
+  &OceanColors_p,
   &Ice_p 
 };
 

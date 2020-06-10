@@ -1,6 +1,5 @@
 #include <FastLED.h>
 
-#define GOOD_ORANGE 0xff5a00
 uint8_t n = 0;
 
 // This example shows several ways to set up and use 'palettes' of colors
@@ -19,23 +18,6 @@ uint8_t n = 0;
 //
 // Some notes on the more abstract 'theory and practice' of
 // FastLED compact palettes are at the bottom of this file.
-
-const TProgmemRGBPalette16 HappyLights_p FL_PROGMEM =
-{  CRGB::Cyan, CRGB::Black, CRGB::Black, CRGB::Lime, 
-   CRGB::Black, CRGB::Cyan, CRGB::Black, CRGB::Black, 
-   CRGB::DarkViolet, CRGB::Black, CRGB::Black, CRGB::Lime, 
-   CRGB::Black, CRGB::DarkViolet, CRGB::Black, CRGB::Black };
-const TProgmemRGBPalette16 FireLights_p FL_PROGMEM =
-{  CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Black, 
-   GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE, CRGB::Black, 
-   CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Black, 
-   GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE, CRGB::Black };
-/*const TProgmemRGBPalette16 FireLights_p FL_PROGMEM =
-{  CRGB::Red, CRGB::Black, CRGB::DarkGoldenrod, CRGB::Black, 
-   CRGB::Red, CRGB::Black, CRGB::DarkGoldenrod, CRGB::Black, 
-   CRGB::Red, CRGB::Black, CRGB::DarkGoldenrod, CRGB::Black, 
-   CRGB::Red, CRGB::Black, CRGB::DarkGoldenrod, CRGB::Black };*/
-
 
 
 extern CRGBPalette16 myRedWhiteBluePalette;
@@ -109,8 +91,7 @@ void ChangePalettePeriodically()
 }*/
 
 // This function fills the palette with totally random colors.
-void SetupTotallyRandomPalette()
-{
+void SetupTotallyRandomPalette() {
     for( int i = 0; i < 16; i++) {
         currentPalette[i] = CHSV( random8(), 255, random8());
     }

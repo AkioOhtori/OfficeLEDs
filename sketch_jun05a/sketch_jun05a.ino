@@ -57,11 +57,15 @@ void loop() {
     break;
 
     case 2:
-    twinkleFox();
+    twinkleFox(0);
     break;
 
     case 3:
-    //twinkle(BG_ON);
+    twinkleFox(1);
+    break;
+
+    case 4:
+    //solid
     break;
 
     case 9:  //SERIAL COMMANDS
@@ -80,7 +84,7 @@ void loop() {
 
 void chase_mode() {
   int skip = int(ceil((NUM_LEDS-1)/length));  //dictates how far apart injections are TODO make dynamic
-  int skip_rainbow_inc = int(256/length);
+  int skip_rainbow_inc = int(256/length);  //if each LED is to be a different pallette color, that math is here
 
   for(int i = 0; i < NUM_LEDS; i++) {
     int skip_rainbow = 0;
