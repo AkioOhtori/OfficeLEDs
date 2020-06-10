@@ -8,11 +8,11 @@ CRGBArray<NUM_LEDS> leds;
 
 int mode = 0;
 int mode_new = 0;
-int brightness = 64;
+int brightness = 32;
 int speed = 100;
 int pattern = 16;
-int length = 8;
-int decay = 8;
+int length = 1;
+int decay = 16;
 bool rainbowchase = 1;
 
 //SERIAL CRAP//
@@ -39,19 +39,15 @@ uint8_t color_id = 0;  //Color palate index; TODO make controllable
 //uint8_t len = 1;  //Defines the number of lit LEDs active at once; TODO make controlable
 //=== function to print the command list:  ===========================
 void printHelp(void) {
-  Serial.println("--- COMMANDS ---");
+  Serial.println("----------- COMMANDS -----------");
   Serial.println("'help' -> Prints this message");
   Serial.println("'mode 0-9' -> Set LED animation mode");
   Serial.println("'brightness 0 - 255' -> Set LED brightness");
   Serial.println("'pattern ?? - ??' -> Set LED pattern/color");
-  Serial.println("'speed 0 - 100' -> Set LED animation speed");
-  Serial.println("'decay 0 - 256' -> Set duration of LED fade out");
+  Serial.println("'speed 0 - 100' -> Set LED animation speed (Higher is faster)");
+  Serial.println("'decay 0 - 256' -> Set duration of LED fade out (Higher is faster");
   Serial.println("'length 1 - 32' -> Set LED pattern length");
-  Serial.println("Use 'exit' to exit serial and 'off' to turn off LEDs");
-  //Serial.println("? -> Print this HELP");  
-  //Serial.println("a -> LED On  \"activate\"");
-  //Serial.println("d -> LED Off \"deactivate\"");
-  //Serial.println("s -> LED     \"status\"");  
+  Serial.println("Use 'exit' to exit serial and 'off' (or 'on') to toggle LEDs");
 }
 
 void setup() {
@@ -76,6 +72,7 @@ bool quick_serial() {
     mode_new = mode;
     mode = 9;
     Serial.flush();
+    Serial.println("Serial Mode Active! ");
     return 1;
   }
   else {
@@ -83,7 +80,7 @@ bool quick_serial() {
   }
 }
 
-
+/* ~~~~~ SERIAL CONTROL OF MODES ~~~~ */
 void getMode() {
 
 int temp;
@@ -95,7 +92,7 @@ int temp;
     value = "";
     step = 1;
     Serial.flush(); 
-    Serial.print("Serial Mode Active! Command: ");
+    Serial.print("Command: ");
     break;
     
     case 1:
@@ -126,7 +123,7 @@ int temp;
         serialtimeout = TIMEOUT;
         mode = mode_new;
         Serial.println();
-        Serial.println("Serial Mode timed out! Resuming...");
+        Serial.println("Serial Mode timed out!");
         step = 0;
         return 0;
       }
@@ -175,17 +172,21 @@ int temp;
     //change the brightness, yo
     //Serial.println(value);
     brightness = value.toInt();//std::stoi(value);
-    Serial.println();
     Serial.print("Brightness set to: ");
     Serial.println(brightness);
     step = 0;
     break;
 
-    case 'o': //turn LEDs off
-    brightness = 0;
-    Serial.println();
-    Serial.print("LEDs turned off!");
-    step = 'e';
+    case 'o': //turn LEDs off/on
+    if (brightness != 0) {
+      brightness = 0;
+      Serial.println("LEDs turned off!");
+    }
+    else {
+      brightness = 32;
+      Serial.println("LEDs turned back on at low brightness.");
+    }
+    step = 0;
     break;
 
     case 's': //SPEED
@@ -230,7 +231,6 @@ int temp;
       temp = 0;
     }
     decay = temp;
-    Serial.println();
     Serial.print("Tail set to: ");
     Serial.println(decay);
     step = 0;
@@ -301,7 +301,6 @@ void chase_mode() {
     int skip_rainbow = 0;
     for(int x = 0; x < NUM_LEDS; x=(x+skip)) {  //writes color to all LEDs
       leds[(i+x)%NUM_LEDS] = ColorFromPalette(RainbowColors_p, (color_id + (skip_rainbow)), brightness, LINEARBLEND);
-      //color_id++;  //if increment here you yet a rainbow effect
       if(rainbowchase) {skip_rainbow = skip_rainbow + skip_rainbow_inc;}
     }
     
@@ -318,9 +317,4 @@ void chase_mode() {
 void pallette() {
   return 0;
 }
-
-/*TODO
-multistring wrap
-multistring
-multimode
-controllability */
+//EOF
