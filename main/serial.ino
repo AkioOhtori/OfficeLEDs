@@ -24,12 +24,14 @@ void printHelp(void) {
     Serial.println("'speed 0 - 100' -> Set LED animation speed (Higher is faster)");
     Serial.println("'decay 0 - 256' -> Set duration of LED fade out (Higher is faster");
     Serial.println("'length 1 - 32' -> Set LED pattern length");
+    Serial.println("'fav 1 - 5' -> Set predetermined everything!  Easy mode!");
     Serial.println("Use 'mode help' and/or 'pattern help' for more info");
     Serial.println("Use 'exit' to exit serial and 'off' (or 'on') to toggle LEDs");
 }
 void printPatterns(void) {
     Serial.println("----------- PATTERNS -----------");
-    Serial.println("0 through 9 = Red through Pink");
+    Serial.println("0 through 8 = Red through Pink");
+    Serial.println("9 - White!");
     Serial.println("10 - Rainbow");
     Serial.println("11 - Happy Lights!");
     Serial.println("12 - Party!");
@@ -55,6 +57,16 @@ void printModes(void) {
     Serial.println("2 - Domesticated Twinkle Fox");
     Serial.println("3 - Twinkle Fox w/ Auto Background");
     Serial.println("----------- MODES -----------");
+}
+
+void printFavorites(void) {
+    Serial.println("----------- FAVORITES -----------");
+    Serial.println("1 - Slow Rainbow Pallette");
+    Serial.println("2 - Twinkling Happy Lights");
+    Serial.println("3 - Twinkling Happy Lights w/ Background");
+    Serial.println("4 - Dim Red Pallette");
+    Serial.println("5 - Three Red Tails");
+    Serial.println("----------- FAVORITES -----------");
 }
 
 /* ~~~~~ SERIAL CONTROL OF MODES ~~~~ */
@@ -227,17 +239,23 @@ uint16_t temp;
     break;
 
     case 'f': //favorites
-    temp = value.toInt();
-
-    if (temp > 5){//NO_FAVS) {
-      step = 9;
-      break;
+    
+    if (value[0] == 'h') {
+      printFavorites();
+      step = 0;
     }
     else {
-      Serial.print("Fav set to: #");
-      Serial.println(temp);
-      recallFavorite(temp);
-      step = 0;
+      temp = value.toInt();
+      if (temp > 5) {
+        step = 9;
+        break;
+      }
+      else {
+        Serial.print("Fav set to: #");
+        Serial.println(temp);
+        recallFavorite(temp);
+        step = 0;
+      }
     }
     break;
 
@@ -252,14 +270,31 @@ uint16_t temp;
     decay = temp;
     Serial.print("Tail set to: ");
     Serial.println(decay);
-    step = 0;
+  step = 0;
     break;
 
     case 'h': //HELP!!
     step = 0;
     printHelp();
     break;
-    
+
+    case 'i': //Info
+    Serial.print("Mode = ");
+    Serial.println(mode_new);
+    Serial.print("Brightness = ");
+    Serial.println(brightness);
+    Serial.print("Speed = ");
+    Serial.println(speed);
+    Serial.print("Pattern = ");
+    Serial.println(pattern);
+    Serial.print("Length = ");
+    Serial.println(length);
+    Serial.print("Decay = ");
+    Serial.println(decay);
+    Serial.println("I hope that helped!");
+    step = 0;
+    break;
+
     case 'e': //exit!
     case 'x':
     Serial.println("Exiting Serial mode!");

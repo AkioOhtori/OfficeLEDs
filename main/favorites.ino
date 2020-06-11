@@ -114,7 +114,7 @@ void readFavorite(char x) {
 
     uint16_t smush = ((low << 0) & 0xFF) + ((high << 8) & 0xFF00);
     favorites[x].speed = smush;
-    Serial.println(favorites[x].speed);
+    // Serial.println(favorites[x].speed);
     addr++;
 
     a = EEPROM.read(addr);

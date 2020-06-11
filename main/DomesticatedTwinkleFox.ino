@@ -407,7 +407,7 @@ const TProgmemRGBPalette16 Night_p FL_PROGMEM =
 {  CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Red, 
    CRGB::Red, CRGB::Red, CRGB::Red, CRGB::DarkViolet, 
    CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Red, 
-   CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Lime };
+   CRGB::Red, CRGB::Red, CRGB::Red, GOOD_ORANGE };
 
 
 /* --- BEGIN SOLID COLOR "PALLETTES" --- */
@@ -465,13 +465,6 @@ const TProgmemRGBPalette16 Indigo_p FL_PROGMEM =
   0x5500AB, 0x5500AB, 0x5500AB, 0x5500AB,
   0x5500AB, 0x5500AB, 0x5500AB, 0x5500AB};
 
-// const TProgmemRGBPalette16 Violet_p FL_PROGMEM =
-// {
-//   0xAB0055, 0xAB0055, 0xAB0055, 0xAB0055,
-//   0xAB0055, 0xAB0055, 0xAB0055, 0xAB0055,
-//   0xAB0055, 0xAB0055, 0xAB0055, 0xAB0055,
-//   0xAB0055, 0xAB0055, 0xAB0055, 0xAB0055};
-
 const TProgmemRGBPalette16 Violet_p FL_PROGMEM =
 {
   0x800080, 0x800080, 0x800080, 0x800080,
@@ -486,6 +479,12 @@ const TProgmemRGBPalette16 Pink_p FL_PROGMEM =
   0xD5002B, 0xD5002B, 0xD5002B, 0xD5002B,
   0xD5002B, 0xD5002B, 0xD5002B, 0xD5002B};
 
+const TProgmemRGBPalette16 White_p FL_PROGMEM =
+{  CRGB::White, CRGB::White, CRGB::White, CRGB::White, 
+   CRGB::White, CRGB::White, CRGB::White, CRGB::White, 
+   CRGB::White, CRGB::White, CRGB::White, CRGB::White, 
+   CRGB::White, CRGB::White, CRGB::White, CRGB::White };
+
 
 // Add or remove palette names from this list to control which color
 // palettes are used, and in what order.
@@ -498,9 +497,10 @@ extern const TProgmemRGBPalette16* ActivePaletteList[] = {
   &Green_p,
   &Aqua_p,            //5
   &Blue_p,
-  &Indigo_p,
-  &Violet_p,          //8 Could be replaced
-  &Pink_p,            //9
+  // &Indigo_p,
+  &Violet_p,          //7 Could be replaced
+  &Pink_p,            //8
+  &White_p,           //9
 
   //Good stuff!
   &RainbowColors_p,   //10
