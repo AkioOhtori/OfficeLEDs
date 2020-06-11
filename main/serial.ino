@@ -68,6 +68,7 @@ uint16_t temp;
     command = "";
     value = "";
     step = 1;
+    serialtimeout = TIMEOUT;
     Serial.flush(); 
     Serial.print("Command: ");
     break;
@@ -228,7 +229,7 @@ uint16_t temp;
     case 'f': //favorites
     temp = value.toInt();
 
-    if (temp > NO_FAVS) {
+    if (temp > 5){//NO_FAVS) {
       step = 9;
       break;
     }
