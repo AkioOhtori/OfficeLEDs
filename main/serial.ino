@@ -68,6 +68,21 @@ void printFavorites(void) {
     Serial.println("5 - Three Red Tails");
     Serial.println("----------- FAVORITES -----------");
 }
+void printInfo(void) {
+    Serial.print("Mode = ");
+    Serial.println(mode_new);
+    Serial.print("Brightness = ");
+    Serial.println(brightness);
+    Serial.print("Speed = ");
+    Serial.println(speed);
+    Serial.print("Pattern = ");
+    Serial.println(pattern);
+    Serial.print("Length = ");
+    Serial.println(length);
+    Serial.print("Decay = ");
+    Serial.println(decay);
+    Serial.println("I hope that helped!");
+}
 
 /* ~~~~~ SERIAL CONTROL OF MODES ~~~~ */
 void getMode(void) {
@@ -279,19 +294,7 @@ uint16_t temp;
     break;
 
     case 'i': //Info
-    Serial.print("Mode = ");
-    Serial.println(mode_new);
-    Serial.print("Brightness = ");
-    Serial.println(brightness);
-    Serial.print("Speed = ");
-    Serial.println(speed);
-    Serial.print("Pattern = ");
-    Serial.println(pattern);
-    Serial.print("Length = ");
-    Serial.println(length);
-    Serial.print("Decay = ");
-    Serial.println(decay);
-    Serial.println("I hope that helped!");
+    printInfo();
     step = 0;
     break;
 

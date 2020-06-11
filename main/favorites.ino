@@ -98,7 +98,7 @@ void readFavorite(char x) {
     // Serial.println(a);
 
     // a = ADDR;
-
+/*
     a = EEPROM.read(addr);
     favorites[x].mode = a;
     addr++;
@@ -126,5 +126,7 @@ void readFavorite(char x) {
     addr++;
 
     a = EEPROM.read(addr);
-    addr++;
+    addr++;*/
+
+    EEPROM.get(addr, favorites[0]);
 }
