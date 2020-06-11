@@ -386,7 +386,7 @@ const TProgmemRGBPalette16 Ice_p FL_PROGMEM =
 };
 
 const TProgmemRGBPalette16 HappyLights_p FL_PROGMEM =
-{  CRGB::Cyan, CRGB::DarkViolet, CRGB::Lime, CRGB::Cyan, 
+{  CRGB::DarkViolet, CRGB::Cyan, CRGB::Lime, CRGB::Cyan, 
    CRGB::DarkViolet, CRGB::Cyan, CRGB::Lime, CRGB::DarkViolet, 
    CRGB::Red, CRGB::Cyan, CRGB::Lime, CRGB::DarkViolet, 
    CRGB::Lime, CRGB::DarkViolet, CRGB::Cyan, CRGB::Red };
@@ -402,6 +402,12 @@ const TProgmemRGBPalette16 FireLights_p FL_PROGMEM =
    GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE, CRGB::Black, 
    CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Black, 
    GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE, CRGB::Black };
+
+const TProgmemRGBPalette16 Night_p FL_PROGMEM =
+{  CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Red, 
+   CRGB::Red, CRGB::Red, CRGB::Red, CRGB::DarkViolet, 
+   CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Red, 
+   CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Lime };
 
 
 /* --- BEGIN SOLID COLOR "PALLETTES" --- */
@@ -486,8 +492,8 @@ const TProgmemRGBPalette16 Pink_p FL_PROGMEM =
 
 extern const TProgmemRGBPalette16* ActivePaletteList[] = {
   &Red_p,             //0
-  &Orange_p,
-  &Yellow_p,
+  &Orange_p,          //1
+  &Yellow_p,          //2
   &YellowGreen_p,     //3 Could be replaced
   &Green_p,
   &Aqua_p,            //5
@@ -517,9 +523,10 @@ extern const TProgmemRGBPalette16* ActivePaletteList[] = {
   //Other
   
   //XMAS
-  &RedGreenWhite_p,   //xx - very XMas
+  &RedGreenWhite_p,   //22 - very XMas
   &Holly_p,           //23 - Green with a hint of red
-  &RedWhite_p
+  &RedWhite_p,        //24
+  &Night_p            //25
 };
 
 void changePalette(void) {

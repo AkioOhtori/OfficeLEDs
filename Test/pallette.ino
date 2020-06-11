@@ -1,24 +1,9 @@
 #include <FastLED.h>
 
-uint8_t n = 0;
+// uint8_t n = 0;
 
-// This example shows several ways to set up and use 'palettes' of colors
-// with FastLED.
-//
-// These compact palettes provide an easy way to re-colorize your
-// animation on the fly, quickly, easily, and with low overhead.
-//
-// USING palettes is MUCH simpler in practice than in theory, so first just
-// run this sketch, and watch the pretty lights as you then read through
-// the code.  Although this sketch has eight (or more) different color schemes,
-// the entire sketch compiles down to about 6.5K on AVR.
-//
-// FastLED provides a few pre-configured color palettes, and makes it
-// extremely easy to make up your own color schemes with palettes.
-//
-// Some notes on the more abstract 'theory and practice' of
-// FastLED compact palettes are at the bottom of this file.
-
+/* This code is adapted (read: butchered) from the "ColorPallette" example code
+No credit for the code is available, so uh... it belongs to whoever wrote it.*/
 
 extern CRGBPalette16 myRedWhiteBluePalette;
 extern const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM;
@@ -44,6 +29,8 @@ void pallette(void) {
     }
 }
 
+//NO CODE USED AFTER THIS POINT!
+/*
 void FillLEDsFromPaletteColors( uint8_t colorIndex)
 {  
     // uint8_t brightness = BRIGHTNESS;//255; //TODO make this a variable
@@ -51,11 +38,11 @@ void FillLEDsFromPaletteColors( uint8_t colorIndex)
     //n++;
     //fill LED Array, size, index for movement, spread TODO, pallette TODO, brightness TODO, blending
 
-    /*for( int i = 0; i < NUM_LEDS; i++) {
-        leds[i] = ColorFromPalette( currentPalette, colorIndex, brightness, currentBlending);
-        colorIndex += 4;  //TODO make this a variable SPREAD
-    }*/
-}
+    // for( int i = 0; i < NUM_LEDS; i++) {
+    //     leds[i] = ColorFromPalette( currentPalette, colorIndex, brightness, currentBlending);
+    //     colorIndex += 4;  //TODO make this a variable SPREAD
+    // }
+}*/
 
 
 // There are several different palettes of colors demonstrated here.
@@ -86,7 +73,7 @@ void ChangePalettePeriodically()
         if( secondHand == 55)  { currentPalette = myRedWhiteBluePalette_p; currentBlending = LINEARBLEND; }
     }
 }*/
-
+/*
 // This function fills the palette with totally random colors.
 void SetupTotallyRandomPalette() {
     for( int i = 0; i < 16; i++) {
@@ -151,7 +138,7 @@ const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM =
     CRGB::Black
 };
 
-
+*/
 
 
 // Additionl notes on FastLED compact palettes:

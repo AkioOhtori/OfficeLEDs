@@ -20,10 +20,11 @@ void printHelp(void) {
     Serial.println("'help' -> Prints this message");
     Serial.println("'mode 0-9' -> Set LED animation mode");
     Serial.println("'brightness 0 - 255' -> Set LED brightness");
-    Serial.println("'pattern ?? - ??' -> Set LED pattern/color");
+    Serial.println("'pattern 0 - 24(ish)' -> Set LED pattern/color");
     Serial.println("'speed 0 - 100' -> Set LED animation speed (Higher is faster)");
     Serial.println("'decay 0 - 256' -> Set duration of LED fade out (Higher is faster");
     Serial.println("'length 1 - 32' -> Set LED pattern length");
+    Serial.println("Use 'mode help' and/or 'pattern help' for more info");
     Serial.println("Use 'exit' to exit serial and 'off' (or 'on') to toggle LEDs");
 }
 void printPatterns(void) {
@@ -59,11 +60,11 @@ void printModes(void) {
 /* ~~~~~ SERIAL CONTROL OF MODES ~~~~ */
 void getMode(void) {
 
-int temp;
+uint16_t temp;
 
   switch (step) {
     
-    case 0:
+    case 0:  //Resets parameters and gets ready to accept a new command
     command = "";
     value = "";
     step = 1;
@@ -71,77 +72,73 @@ int temp;
     Serial.print("Command: ");
     break;
     
-    case 1:
+    case 1:  //Checks for first command, separated from second by a " "
       if(Serial.available()) {
-        serialtimeout = TIMEOUT;
-        char rx = (char)Serial.read();
+        serialtimeout = TIMEOUT;  //we've recieved a command, reset timeout
+        char rx = (char)Serial.read(); //temp character storage
         Serial.flush();
         
-        if (rx == ' ') {
+        if (rx == ' ') {  //if it was a space, move on to storing the 2nd command
           Serial.print(" ");
           step = 2;
         }
-        else if (rx == '\n') {
+        else if (rx == '\n') {  //if it was a newline, just roll with it
           value = "0";
           step = command[0];
           Serial.println(" - I'll give it a try!");
         }
-        else {
+        else {  //otherwise print what you're recieved (echo)
           command += rx;
           Serial.print(rx);
         }
       }
-      else if (serialtimeout > 0) {
+      else if (serialtimeout > 0) {  //otherwise decrement the timeout
         serialtimeout--;
         delay(1000);
       }
-      else {
+      else {  //if timeout has expired, exit serial mode
         Serial.println("Serial mode timed out!");
         step = 'e';
       }
     break;
 
     case 2:
-    if(Serial.available()) {
-      serialtimeout = TIMEOUT;
-      char rx = (char)Serial.read();
+    if(Serial.available()) {          //Checks for 2nd command, separated from second by a newline
+      serialtimeout = TIMEOUT;        //we've recieved a command, reset timeout
+      char rx = (char)Serial.read();  //Read the serial buffer
       Serial.flush();
 
-      if (rx == '\n') {
-        step = command[0];
+      if ((rx == '\n') || (rx == ' ')) {  //if new char is a newline or space, we're done!
+        step = command[0];            //all 1st letters are unique, so just use that for the case
         Serial.println(" - I'll give it a try!");
       }
-      else if (char(rx) == ' ') {
-        step = 9;
-      }
       else {
-        value += char(rx);
+        value += char(rx);            //otherwise, print and carry on
         Serial.print(rx);
       }
     }
-    else if (serialtimeout > 0) {
+    else if (serialtimeout > 0) {  //service timeout
       serialtimeout--;
       delay(1000);
     }
-    else {
+    else {    //timeout
       Serial.println("Serial mode timed out!!");
       step = 'e';
     }
     break;
     
-    case 'm':  //MODE
-    //change the mode, yo
-    if (value[0] == 'h')
+    case 'm':  //MODE - Changes the operational mode
+    if (value[0] == 'h')  //if the argument is "help" print that
     {
         printModes();
     }
     else {
         temp = value.toInt();
-        if (temp == SERIAL_MODE) {
+        if (temp == SERIAL_MODE) {  //if mode is set to serial mode we'd be trapped(ish)
             Serial.println("Are you TRYING to break this!?");
-            temp = mode_new;
+            temp = mode_new;    //so basically ignore that
         }
-        mode_new = temp; //TODO validation
+        mode_new = temp; //otherwise store it as the "new" mode (serviced on exit)
         Serial.print("Mode set to: ");
         Serial.println(mode_new);
     }
@@ -150,9 +147,8 @@ int temp;
 
     case 'b':  //BRIGHTNESS
     //change the brightness, yo
-    //Serial.println(value);
-    temp = value.toInt();//std::stoi(value);
-    if (temp >= 255) {
+    temp = value.toInt();  //conver the brightness
+    if (temp >= 255) {    //must be in range 0 - 255
         temp = 255;
     }
     else if (temp < 0) {
@@ -168,15 +164,16 @@ int temp;
     if (brightness != 0) {
       brightness = 0;
       Serial.println("LEDs turned off!");
+      step = 'e';  //if turning off, exit
     }
     else {
       brightness = DEFAULT_BRIGHTNESS;
       Serial.println("LEDs turned back on at default brightness.");
+      step = 0;
     }
-    step = 0;
     break;
 
-    case 's': //SPEED
+    case 's': //SPEED - Must be between 0 (stopped) and 1000
     temp = value.toInt();
     if (temp < 0) { 
         temp = 0;
@@ -190,7 +187,7 @@ int temp;
     step = 0;
     break;
 
-    case 'l': //length
+    case 'l': //length - determines a lot of stuff 0 - MAX_LEN
     temp = value.toInt();
     if (temp <= 1) {
       temp = 1;
@@ -206,31 +203,48 @@ int temp;
     step = 0;
     break;
 
-    case 'p': //PATTERN
-    if (value[0] == 'h')
+    case 'p': //PATTERN - index to reference the patterns
+    if (value[0] == 'h') //if help value is given, print help
     {
         printPatterns();
     }
-    else {
+    else {  //otherwise make sure the value is in range
         uint8_t numberOfPalettes = sizeof(ActivePaletteList) / sizeof(ActivePaletteList[0]);
         temp = value.toInt();
         if (temp < 0) {
             temp = 0;
         }
         else if (temp >= numberOfPalettes) {
-            temp = numberOfPalettes -1;
+            temp = numberOfPalettes;
         }
         pattern = temp;
         currentPalette = *ActivePaletteList[pattern];
         Serial.print("Pattern set to: #");
         Serial.println(pattern);
     }
-    
     step = 0;
     break;
 
     case 'f': //favorites
-    step = 0;
+    temp = value.toInt();
+
+    if (temp > NO_FAVS) {
+      step = 9;
+      break;
+    }
+    else {
+      mode_new = favorites[temp].mode;
+      brightness = favorites[temp].brightness;
+      speed = favorites[temp].speed;
+      pattern = favorites[temp].pattern;
+      length = favorites[temp].length;
+      decay = favorites[temp].decay;
+
+      Serial.print("Fav set to: #");
+      Serial.println(temp);
+
+      step = 0;
+    }
     break;
 
     case 'd': //decay/ tail length

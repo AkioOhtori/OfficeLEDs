@@ -122,4 +122,24 @@ void chase_mode() {
   return 0;
 }
 
+void pallette(void) {
+    currentBlending = LINEARBLEND; //TODO make... better
+
+    static uint16_t startIndex = 0;
+
+    fill_palette(leds, NUM_LEDS, startIndex, length, currentPalette, brightness, LINEARBLEND);
+
+    if (quick_serial()) {return 0;}
+
+    FastLED.show();
+
+    if (speed > 0) {
+        startIndex = (startIndex + ceil(length/2.0));
+        FastLED.delay(1000/ speed);
+        }
+    else {
+        FastLED.delay(100);
+    }
+}
+
 //EOF
