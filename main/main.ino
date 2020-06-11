@@ -30,6 +30,7 @@ String value = "";
 int serialtimeout = TIMEOUT;
 #define SERIAL_MODE 9
 
+
 CRGBPalette16 currentPalette;
 TBlendType    currentBlending;
 
@@ -50,6 +51,9 @@ void setup() {
   while (!Serial) {
   ; // wait for serial port to connect. Needed for native USB port only
   }
+  readFavorite(0);
+  recallFavorite(0);
+  mode = mode_new;
   Serial.println("--- Press enter to begin serial mode ---");
 }
 

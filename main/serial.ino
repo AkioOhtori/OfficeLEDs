@@ -234,16 +234,9 @@ uint16_t temp;
       break;
     }
     else {
-      mode_new = favorites[temp].mode;
-      brightness = favorites[temp].brightness;
-      speed = favorites[temp].speed;
-      pattern = favorites[temp].pattern;
-      length = favorites[temp].length;
-      decay = favorites[temp].decay;
-
       Serial.print("Fav set to: #");
       Serial.println(temp);
-
+      recallFavorite(temp);
       step = 0;
     }
     break;
@@ -272,6 +265,7 @@ uint16_t temp;
     Serial.println("Exiting Serial mode!");
     Serial.println("-~- Press enter to enter serial mode -~-");
     step = 0;
+    writeFavorite(0);
     mode = mode_new;
     break;
 
