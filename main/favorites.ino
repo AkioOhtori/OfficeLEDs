@@ -18,8 +18,8 @@ extern fav favorites[NO_FAVS] =
 //mode, bri, spd, pat, len, dec
 {{0, 64, 500, 0, 1, 16},    //cannon default
  {1, 128, 50, 10, 1, 16},   //Rainbow pallete slow
- {3, 128, 500, 11, 2, 16},  //Happylights twinkle
- {2, 128, 250, 11, 4, 16}, //Happy w/o BG
+ {2, 128, 500, 11, 2, 16},  //Happylights twinkle
+ {0, 128, 1000, 10, 8, 32}, //Rainbow chase
  {1, 64, 100, 0, 1, 16},   //Red pallette
  {0, 64, 25, 0, 3, 8}};     //three red tails
 

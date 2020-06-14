@@ -22,7 +22,7 @@ void printHelp(void) {
     Serial.println("'brightness 0 - 255' -> Set LED brightness");
     Serial.println("'pattern 0 - 24(ish)' -> Set LED pattern/color");
     Serial.println("'speed 0 - 100' -> Set LED animation speed (Higher is faster)");
-    Serial.println("'decay 0 - 256' -> Set duration of LED fade out (Higher is faster");
+    Serial.println("'decay 0 - 256' -> Set duration of LED fade out (Higher is faster)");
     Serial.println("'length 1 - 32' -> Set LED pattern length");
     Serial.println("'fav 1 - 5' -> Set predetermined everything!  Easy mode!");
     Serial.println("Use 'mode help' and/or 'pattern help' for more info");

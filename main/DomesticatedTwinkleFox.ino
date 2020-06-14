@@ -391,24 +391,17 @@ const TProgmemRGBPalette16 HappyLights_p FL_PROGMEM =
    CRGB::Red, CRGB::Cyan, CRGB::Lime, CRGB::DarkViolet, 
    CRGB::Lime, CRGB::DarkViolet, CRGB::Cyan, CRGB::Red };
 
-const TProgmemRGBPalette16 HappyLightsOld_p FL_PROGMEM =
-{  CRGB::Cyan, CRGB::Black, CRGB::Black, CRGB::Lime, 
-   CRGB::Black, CRGB::Cyan, CRGB::Black, CRGB::Black, 
-   CRGB::DarkViolet, CRGB::Black, CRGB::Black, CRGB::Lime, 
-   CRGB::Black, CRGB::DarkViolet, CRGB::Black, CRGB::Black };
-
 const TProgmemRGBPalette16 FireLights_p FL_PROGMEM =
-{  CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Black, 
-   GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE, CRGB::Black, 
-   CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Black, 
-   GOOD_ORANGE, GOOD_ORANGE, GOOD_ORANGE, CRGB::Black };
+{  CRGB::C9_Red, CRGB::Red, CRGB::Red, CRGB::Orange, 
+   DarkRed, C9_Orange, GOOD_ORANGE, CRGB::C9_Orange, 
+   CRGB::Red, CRGB::C9_Red, CRGB::Red, CRGB::Orange, 
+   DarkRed, GOOD_ORANGE, C9_Orange, CRGB::C9_Orange };
 
 const TProgmemRGBPalette16 Night_p FL_PROGMEM =
 {  CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Red, 
    CRGB::Red, CRGB::Red, CRGB::Red, CRGB::DarkViolet, 
    CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Red, 
    CRGB::Red, CRGB::Red, CRGB::Red, GOOD_ORANGE };
-
 
 /* --- BEGIN SOLID COLOR "PALLETTES" --- */
 //This is a crap way to do this, but it keeps it simple

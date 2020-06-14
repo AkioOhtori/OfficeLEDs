@@ -99,7 +99,7 @@ Each LED is a different color based on the pattern assigned, this can be switche
 If serial is detected by "quick_serial" this loop is abandoned
 */
 void chase_mode() {
-  uint16_t skip = uint16_t(ceil((NUM_LEDS-1)/length));  //dictates how far apart injections are TODO make dynamic
+  uint16_t skip = uint16_t(1+ ((NUM_LEDS-1)/length));  //dictates how far apart injections are TODO make dynamic
   uint16_t skip_rainbow_inc = uint16_t(256/(length));  //if each LED is to be a different pallette color, that math is here
 
   uint16_t range;
@@ -122,7 +122,7 @@ void chase_mode() {
     if (speed == 0) {FastLED.delay(100);}    //speed = 0 means LEDs stopped, delay not relevant
     else {FastLED.delay(1000/speed);}
   }
-  if(!rainbowchase) {color_id = color_id + length;} //increment to the next psudo-palate  TODO not really what length is for
+  if(!rainbowchase) {color_id = color_id + length*2;} //increment to the next psudo-palate  TODO not really what length is for
   return 0;
 }
 
