@@ -392,10 +392,10 @@ const TProgmemRGBPalette16 HappyLights_p FL_PROGMEM =
    CRGB::Lime, CRGB::DarkViolet, CRGB::Cyan, CRGB::Red };
 
 const TProgmemRGBPalette16 FireLights_p FL_PROGMEM =
-{  CRGB::C9_Red, CRGB::Red, CRGB::Red, CRGB::Orange, 
-   DarkRed, C9_Orange, GOOD_ORANGE, CRGB::C9_Orange, 
-   CRGB::Red, CRGB::C9_Red, CRGB::Red, CRGB::Orange, 
-   DarkRed, GOOD_ORANGE, C9_Orange, CRGB::C9_Orange };
+{  C9_Red, CRGB::Red, CRGB::Red, CRGB::Orange, 
+   CRGB::DarkRed, C9_Orange, GOOD_ORANGE, C9_Orange, 
+   CRGB::Red, C9_Red, CRGB::Red, CRGB::Orange, 
+   CRGB::DarkRed, GOOD_ORANGE, C9_Red, C9_Orange };
 
 const TProgmemRGBPalette16 Night_p FL_PROGMEM =
 {  CRGB::Red, CRGB::Red, CRGB::Red, CRGB::Red, 

@@ -61,11 +61,11 @@ void printModes(void) {
 
 void printFavorites(void) {
     Serial.println("----------- FAVORITES -----------");
-    Serial.println("1 - Slow Rainbow Pallette");
+    Serial.println("1 - Rainbow Pallette");
     Serial.println("2 - Twinkling Happy Lights");
-    Serial.println("3 - Twinkling Happy Lights w/ Background");
-    Serial.println("4 - Dim Red Pallette");
-    Serial.println("5 - Three Red Tails");
+    Serial.println("3 - Rainbow Chase");
+    Serial.println("4 - Fire Twinkle");
+    Serial.println("5 - Fairy Lights");
     Serial.println("----------- FAVORITES -----------");
 }
 void printInfo(void) {

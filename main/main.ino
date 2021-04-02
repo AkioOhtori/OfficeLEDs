@@ -1,5 +1,5 @@
 #include <FastLED.h>
-#define NUM_LEDS 600
+#define NUM_LEDS 608
 #define DATA_PIN 6
 #define LED_TYPE WS2812B
 #define COLOR_ORDER GRB
@@ -99,7 +99,7 @@ Each LED is a different color based on the pattern assigned, this can be switche
 If serial is detected by "quick_serial" this loop is abandoned
 */
 void chase_mode() {
-  uint16_t skip = uint16_t(1+ ((NUM_LEDS-1)/length));  //dictates how far apart injections are TODO make dynamic
+  uint16_t skip = uint16_t(1+ ((NUM_LEDS-1)/length));  //dictates how far apart injections are599
   uint16_t skip_rainbow_inc = uint16_t(256/(length));  //if each LED is to be a different pallette color, that math is here
 
   uint16_t range;
@@ -122,24 +122,25 @@ void chase_mode() {
     if (speed == 0) {FastLED.delay(100);}    //speed = 0 means LEDs stopped, delay not relevant
     else {FastLED.delay(1000/speed);}
   }
-  if(!rainbowchase) {color_id = color_id + length*2;} //increment to the next psudo-palate  TODO not really what length is for
+  if(!rainbowchase) {color_id = color_id + length;} //increment to the next psudo-palate  TODO not really what length is for
   return 0;
 }
 
 void pallette(void) {
-    currentBlending = LINEARBLEND; //TODO make... better
+    currentBlending = LINEARBLEND; //TODO make controllable
 
     static uint16_t startIndex = 0;
-
+              //LED array, NUM, where to start (movement), icrement pallette, brightness, blend)
     fill_palette(leds, NUM_LEDS, startIndex, length, currentPalette, brightness, LINEARBLEND);
 
     if (quick_serial()) {return 0;}
 
     FastLED.show();
-
+    //This changes the palette "spread" based on the length parameter
     if (speed > 0) {
         startIndex = (startIndex + ceil(length/2.0));
         FastLED.delay(1000/ speed);
+        //only move if the speed is above 0
         }
     else {
         FastLED.delay(100);
